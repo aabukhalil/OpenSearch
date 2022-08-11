@@ -54,10 +54,11 @@ import org.apache.lucene.document.FieldType;
  *
  * @opensearch.internal
  */
-public abstract class DynamicKeyFieldMapper extends FieldMapper {
+public abstract class DynamicKeyFieldMapper extends ParametrizedFieldMapper {
 
-    public DynamicKeyFieldMapper(String simpleName, FieldType fieldType, MappedFieldType defaultFieldType, CopyTo copyTo) {
-        super(simpleName, fieldType, defaultFieldType, MultiFields.empty(), copyTo);
+
+    public DynamicKeyFieldMapper(String simpleName, MappedFieldType defaultFieldType, CopyTo copyTo) {
+        super(simpleName, defaultFieldType, MultiFields.empty(), copyTo);
     }
 
     public abstract MappedFieldType keyedFieldType(String key);
