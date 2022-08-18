@@ -68,7 +68,7 @@ import org.opensearch.index.mapper.SeqNoFieldMapper;
 import org.opensearch.index.mapper.SourceFieldMapper;
 import org.opensearch.index.mapper.TextFieldMapper;
 import org.opensearch.index.mapper.VersionFieldMapper;
-import org.opensearch.index.mapper.FlatObjectFieldMapper;
+import org.opensearch.index.mapper.flatobject.FlatObjectFieldMapper;
 import org.opensearch.index.seqno.RetentionLeaseBackgroundSyncAction;
 import org.opensearch.index.seqno.RetentionLeaseSyncAction;
 import org.opensearch.index.seqno.RetentionLeaseSyncer;

@@ -32,10 +32,12 @@
 
 package org.opensearch.common.xcontent;
 
+import org.opensearch.common.CheckedBiConsumer;
 import org.opensearch.common.ParsingException;
 import org.opensearch.common.Strings;
 import org.opensearch.common.bytes.BytesArray;
 import org.opensearch.common.xcontent.XContentParser.Token;
+import org.opensearch.index.mapper.ContentPath;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -177,5 +179,28 @@ public final class XContentParserUtils {
         } else {
             throw new ParsingException(parser.getTokenLocation(), "Failed to parse object: empty key");
         }
+    }
+
+
+    /**
+     * Visit current {@link XContentParser} recursively, handling Lists and Objects while delegating concrete leaf values to the passed
+     * visitor. This is just a decorator of and backed by {@link XContentParserLeafVisitor}
+     * @param parser  current xContentParser, expecting {@link XContentParser.Token} to be at
+     * {@link XContentParser.Token#START_OBJECT} or {@link XContentParser.Token#START_ARRAY}
+     * @param visitor a CheckedBiConsumer which {@link CheckedBiConsumer} will be called, where
+     *                contentPath having path from root to current field not including current field name itself and parser will be
+     *                positioned at the field itself
+     * @throws ParsingException if the parser isn't positioned at either START_OBJECT or START_ARRAY at the beginning
+     */
+    public static void visitConcreteLeaves(
+        XContentParser parser,
+        CheckedBiConsumer<ContentPath, XContentParser, IOException> visitor
+    ) throws IOException {
+        (new XContentParserLeafVisitor(parser) {
+            @Override
+            protected void handleConcreteLeafValue(ContentPath path, XContentParser parser) throws IOException {
+                visitor.accept(path, parser);
+            }
+        }).visitLeaves();
     }
 }
